@@ -1,0 +1,11 @@
+{
+    "discord_token": "YOUR_DISCORD_BOT_TOKEN",
+    "watch_channel_id": "YOUR_CHANNEL_ID",
+    "guild_id": "YOUR_GUILD_ID",
+    "db": {
+      "host": "localhost",
+      "user": "root",
+      "password": "",
+      "database": "qbox_d01f8b"
+    }
+  }  
