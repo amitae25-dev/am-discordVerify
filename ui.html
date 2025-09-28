@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Verification By: Amitae</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            width: 400px;
+            background: linear-gradient(135deg, #2c2f33 0%, #23272a 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid #7289da;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .header {
+            background: #7289da;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .discord-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-top: 15px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .instructions {
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            color: #b9bbbe;
+        }
+        
+        .error-message {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(237, 66, 69, 0.2);
+            border: 1px solid #ed4245;
+            border-radius: 5px;
+            color: #ed4245;
+            display: none;
+        }
+        
+        .code-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .code-field {
+            width: 100%;
+            padding: 15px;
+            background: #40444b;
+            border: 2px solid #7289da;
+            border-radius: 5px;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+            user-select: all;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #7289da;
+            border: none;
+            border-radius: 3px;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: #677bc4;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        button {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .confirm-btn {
+            background: #7289da;
+            color: white;
+        }
+        
+        .confirm-btn:hover:not(:disabled) {
+            background: #677bc4;
+        }
+        
+        .confirm-btn:disabled {
+            background: #4a4e55;
+            cursor: not-allowed;
+        }
+        
+        .discord-btn {
+            background: #5865f2;
+            color: white;
+        }
+        
+        .discord-btn:hover {
+            background: #4752c4;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #72767d;
+            border-top: 1px solid #40444b;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .loading-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+        
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 50%;
+            background: #7289da;
+            animation: loading 1.5s infinite;
+        }
+        
+        .result-message {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .success {
+            background: rgba(67, 181, 129, 0.2);
+            border: 1px solid #43b581;
+            color: #43b581;
+        }
+        
+        .error {
+            background: rgba(237, 66, 69, 0.2);
+            border: 1px solid #ed4245;
+            color: #ed4245;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .visible {
+            display: flex !important;
+        }
+        
+        .block-visible {
+            display: block !important;
+        }
+        
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #7289da;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-text {
+            margin-top: 15px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <svg class="discord-logo" viewBox="0 0 127.14 96.36">
+                <path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+            </svg>
+            <h1>DISCORD VERIFICATION REQUIRED</h1>
+        </div>
+        
+        <div class="content">
+            <div class="error-message" id="idMismatchError">
+                <strong>Discord ID mismatch!</strong><br>
+                Please open a ticket on our Discord server!
+            </div>
+            
+            <p class="instructions" id="defaultInstructions">Please verify your Discord account by copying the code below to our Discord server!</p>
+            
+            <div class="code-container" id="codeContainer">
+                <input type="text" class="code-field" id="authCode" value="AX7B9C" readonly>
+                <button class="copy-btn" onclick="copyCode()">Copy</button>
+            </div>
+            
+            <div class="buttons">
+                <button class="confirm-btn" id="verifyBtn" onclick="confirmCode()">
+                    <span id="verifyText">Verify</span>
+                    <div class="loading-bar" id="verifyLoading" style="display: none;"></div>
+                </button>
+                <button class="discord-btn" onclick="joinDiscord()">Join Discord</button>
+            </div>
+            
+            <div class="result-message success" id="resultSuccess">
+                ✅ Verification successful! You can now use the server.
+            </div>
+            
+            <div class="result-message error" id="resultError">
+                ❌ Verification failed. Please try again or contact administrators.
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2023 Server Name | All rights reserved
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Verifying...</div>
+    </div>
+
+    <script>
+        let discordInviteUrl = "https://discord.gg/example";
+        
+        // Copy code to clipboard
+        function copyCode() {
+            const codeField = document.getElementById('authCode');
+            codeField.select();
+            codeField.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            
+            // Feedback to user
+            const originalText = event.target.textContent;
+            event.target.textContent = 'Copied!';
+            setTimeout(() => {
+                event.target.textContent = originalText;
+            }, 2000);
+        }
+        
+        // Confirm code
+        function confirmCode() {
+            const verifyBtn = document.getElementById('verifyBtn');
+            const verifyText = document.getElementById('verifyText');
+            const verifyLoading = document.getElementById('verifyLoading');
+            
+            // Show loading animation
+            verifyBtn.disabled = true;
+            verifyText.textContent = "Verifying...";
+            verifyLoading.style.display = 'block';
+            
+            // Send message to client
+            fetch(`https://${GetParentResourceName()}/confirmCode`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    code: document.getElementById('authCode').value
+                })
+            }).catch(error => {
+                console.error('Error:', error);
+                verifyBtn.disabled = false;
+                verifyText.textContent = "Verify";
+                verifyLoading.style.display = 'none';
+            });
+        }
+        
+        // Join Discord
+        function joinDiscord() {
+            fetch(`https://${GetParentResourceName()}/joinDiscord`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).catch(error => console.error('Error:', error));
+            
+            // Open Discord invite
+            window.invokeNative('openUrl', discordInviteUrl);
+        }
+        
+        // Handle messages from client
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            
+            if (data.type === 'show') {
+                document.body.style.display = 'flex';
+                if (data.code) {
+                    document.getElementById('authCode').value = data.code;
+                }
+                if (data.discordInvite) {
+                    discordInviteUrl = data.discordInvite;
+                }
+                
+                // Reset to default state
+                document.getElementById('defaultInstructions').style.display = 'block';
+                document.getElementById('codeContainer').style.display = 'block';
+                document.getElementById('verifyBtn').style.display = 'flex';
+                document.getElementById('idMismatchError').style.display = 'none';
+                
+            } else if (data.type === 'hide') {
+                document.body.style.display = 'none';
+                
+            } else if (data.type === 'setCode') {
+                document.getElementById('authCode').value = data.code;
+                
+            } else if (data.type === 'setDiscordInvite') {
+                discordInviteUrl = data.discordInvite;
+                
+            } else if (data.type === 'showIdMismatch') {
+                // Show ID mismatch error
+                document.body.style.display = 'flex';
+                document.getElementById('idMismatchError').style.display = 'block';
+                document.getElementById('defaultInstructions').style.display = 'none';
+                document.getElementById('codeContainer').style.display = 'none';
+                document.getElementById('verifyBtn').style.display = 'none';
+                
+                if (data.message) {
+                    document.getElementById('idMismatchError').innerHTML = `<strong>Discord ID mismatch!</strong><br>${data.message}`;
+                }
+                
+            } else if (data.type === 'verificationSuccess') {
+                // Show success message
+                document.getElementById('resultSuccess').style.display = 'block';
+                document.getElementById('resultError').style.display = 'none';
+                
+                // Reset verify button
+                const verifyBtn = document.getElementById('verifyBtn');
+                const verifyText = document.getElementById('verifyText');
+                const verifyLoading = document.getElementById('verifyLoading');
+                verifyBtn.disabled = false;
+                verifyText.textContent = "Verify";
+                verifyLoading.style.display = 'none';
+
+                setTimeout(() => {
+                    document.body.style.display = 'none';
+                }, 3000);
+                
+            } else if (data.type === 'verificationFailed') {
+                // Show error message
+                document.getElementById('resultError').style.display = 'block';
+                document.getElementById('resultSuccess').style.display = 'none';
+                
+                // Reset verify button
+                const verifyBtn = document.getElementById('verifyBtn');
+                const verifyText = document.getElementById('verifyText');
+                const verifyLoading = document.getElementById('verifyLoading');
+                verifyBtn.disabled = false;
+                verifyText.textContent = "Verify";
+                verifyLoading.style.display = 'none';
+            }
+        });
+        
+        // Handle ESC key to close UI only for test
+        /*document.addEventListener('keyup', function(e) {
+            if (e.key === 'Escape') {
+                fetch(`https://${GetParentResourceName()}/closeUI`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).catch(error => console.error('Error:', error));
+            }
+        });*/
+    </script>
+</body>
+</html>
